@@ -7,13 +7,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/sefbeck/newProject7.git'
             }
         }
-        stage('SonarQube analysis') {
-            steps {
-              withSonarQubeEnv('mysonar') {
-                sh 'mvn -f SampleWebApp/pom.xml clean package sonar:sonar'
-              }
-            }
-          }
+        
         stage('Test') {
             steps {
                 sh 'cd SampleWebApp && mvn test'
