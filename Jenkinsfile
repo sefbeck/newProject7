@@ -9,7 +9,7 @@ pipeline {
         }
         stage('SonarQube analysis') {
             steps {
-              withSonarQubeEnv( 'sonar') {
+              withSonarQubeEnv( 'mysonar') {
                 sh 'mvn -f SampleWebApp/pom.xml clean package sonar:sonar'
               }
             }
