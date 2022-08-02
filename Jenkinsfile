@@ -8,14 +8,6 @@ pipeline {
             }
         }
         
-        stage('SonarQube analysis') {
-            steps {
-              withSonarQubeEnv('sonar') {
-                sh 'mvn -f SampleWebApp/pom.xml clean package sonar:sonar'
-              }
-            }
-          }
-       
         stage('Test') {
             steps {
                 sh 'cd SampleWebApp && mvn test'
@@ -26,6 +18,22 @@ pipeline {
                  sh 'cd SampleWebApp && mvn package'
             }
         }
+        stage('Deploy to Jfrog') {
+            steps {
+                rtUpload (
+                   serverId: 'my-jfrog',
+                   spec: '''{
+                       "files": [
+                           {
+                           "pattern": "**/*.war",
+                           "target": "my-repo/"
+                           }
+                        ]
+                    }''',
+                )    
+            }
+        }
+        
         stage('Deploy to Tomcat') {
             steps {
                deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.172.145.169:8080/')], contextPath: 'default', war: '**/*.war'
