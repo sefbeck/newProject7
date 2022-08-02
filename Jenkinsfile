@@ -7,6 +7,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/sefbeck/newProject7.git'
             }
         }
+        
         stage('Test') {
             steps {
                 sh 'cd SampleWebApp && mvn test'
@@ -15,6 +16,22 @@ pipeline {
         stage('Build Maven') {
             steps {
                  sh 'cd SampleWebApp && mvn package'
+            }
+        }
+        stage('Deploy to Jfrog') {
+            steps {
+
+                rtUpload (
+                   serverId: 'my-jfrog',
+                   spec: '''{
+                       "files": [
+                           {
+                           "pattern": "**/*.war",
+                           "target": "my-repo/"
+                           }
+                        ]
+                    }''',
+                )    
             }
         }
         stage('Deploy to Tomcat') {
